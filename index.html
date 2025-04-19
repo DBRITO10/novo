@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Translator AI</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: white;
+      text-align: center;
+      padding-bottom: 50px;
+    }
+    header {
+      background-color: #111;
+      padding: 1rem;
+    }
+    header h1 {
+      margin: 0;
+    }
+    .section {
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+    select, textarea {
+      width: 40%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #4F46E5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .flags img {
+      width: 50px;
+      margin: 10px;
+      border-radius: 50%;
+    }
+    .translated-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #1c1c1c;
+      border-radius: 5px;
+      min-height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LANGUAGE TRANSLATOR AI</h1>
+    <p>O limite está em nossa mente. Algo novo está logo ali.</p>
+  </header>
+
+  <div class="section">
+    <h2>Tradução com IA e voz humana</h2>
+    <select id="fromLang">
+      <option value="pt">Português</option>
+      <option value="en">Inglês</option>
+      <option value="es">Espanhol</option>
+      <option value="ja">Japonês</option>
+      <option value="fr">Francês</option>
+      <option value="de">Alemão</option>
+    </select>
+    <select id="toLang">
+      <option value="en">Inglês</option>
+      <option value="pt">Português</option>
+      <option value="es">Espanhol</option>
+      <option value="ja">Japonês</option>
+      <option value="fr">Francês</option>
+      <option value="de">Alemão</option>
+    </select>
+    <br>
+    <textarea id="textInput" placeholder="Digite seu texto..."></textarea>
+    <br>
+    <button onclick="translateText()">Traduzir</button>
+    <button onclick="speakText()">Ouvir</button>
+    <div id="translatedText" class="translated-box">A tradução aparecerá aqui...</div>
+  </div>
+
+  <div class="section">
+    <h2>Cursos gratuitos</h2>
+    <div class="flags">
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Inglês">
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Espanhol">
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Japonês">
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Alemão">
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Francês">
+      <img src="data:image/png;base64,iVBORw0KGgo=" alt="Italiano">
+    </div>
+  </div>
+
+  <script>
+    async function translateText() {
+      const text = document.getElementById('textInput').value;
+      const from = document.getElementById('fromLang').value;
+      const to = document.getElementById('toLang').value;
+
+      const res = await fetch('https://libretranslate.de/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: text, source: from, target: to, format: 'text' })
+      });
+      const data = await res.json();
+      document.getElementById('translatedText').innerText = data.translatedText;
+    }
+
+    function speakText() {
+      const text = document.getElementById('translatedText').innerText;
+      const lang = document.getElementById('toLang').value;
+      const voices = {
+        'pt': 'pt-BR', 'en': 'en-US', 'es': 'es-ES',
+        'ja': 'ja-JP', 'fr': 'fr-FR', 'de': 'de-DE'
+      };
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = voices[lang] || 'en-US';
+      speechSynthesis.speak(utter);
+    }
+  </script>
+</body>
+</html>
